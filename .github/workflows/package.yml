@@ -23,10 +23,10 @@ jobs:
 
       - name: create sample script
         run: |
-            ls -la
-            git status
+            ls -la build_Release_NFM/
+            find -name rtl_airband -type f
             mkdir -p .debpkg/usr/bin
-            cp ${{github.workspace}}/build_Release_NFM/src/bin/rtl_airband .debpkg/usr/bin
+            cp ${{github.workspace}}/build_Release_NFM/src/CMakeFiles/rtl_airband_base.dir/bin/rtl_airband .debpkg/usr/bin
             ls -la .debpkg/usr/bin
             #chmod +x .debpkg/usr/bin/rtl_airband
 
