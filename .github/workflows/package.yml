@@ -28,6 +28,9 @@ jobs:
             mkdir -p .debpkg/DEBIAN
             echo -e "echo postinst" > .debpkg/DEBIAN/postinst
             chmod +x .debpkg/DEBIAN/postinst
+            echo "Hello World!" > .debpkg/usr/bin/simple-file
+            ls -la .debpkg/usr/bin/simple-file
+            chmod -x .debpkg/usr/bin/simple-file
             sudo chown -R root:root .debpkg/
             ls -laR .debpkg/
 
@@ -46,5 +49,5 @@ jobs:
         run: |
           ls -la rtlsdt-airband*.deb
           dpkg-deb --info rtlsdt-airband*.deb
-          dpkg-deb --raw-extract rtlsdt-airband*.deb /tmp
+          sudo dpkg-deb --raw-extract rtlsdt-airband*.deb /tmp
           ls -laR /tmp
