@@ -23,15 +23,13 @@ jobs:
 
       - name: create sample script
         run: |
-            ls -la build_Release_NFM/src
             mkdir -p .debpkg/usr/bin
             cp ${{github.workspace}}/build_Release_NFM/src/rtl_airband .debpkg/usr/bin
-            # ls -la .debpkg/usr/bin
-            # create DEBIAN directory if you want to add other pre/post scripts
             mkdir -p .debpkg/DEBIAN
             echo -e "echo postinst" > .debpkg/DEBIAN/postinst
             chmod +x .debpkg/DEBIAN/postinst
             sudo chown -R root:root .debpkg/
+            ls -laR .debpkg/
 
       - uses: jiro4989/build-deb-action@v2
         with:
