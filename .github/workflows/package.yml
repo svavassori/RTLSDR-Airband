@@ -21,18 +21,14 @@ jobs:
         run: |
             VERBOSE=1 cmake --build ${{github.workspace}}/build_Release_NFM -j
 
-      - name: create sample script
+      - name: create .deb content structure
         run: |
-            mkdir -p .debpkg/usr/bin
-            cp ${{github.workspace}}/build_Release_NFM/src/rtl_airband .debpkg/usr/bin
             mkdir -p .debpkg/DEBIAN
-            echo -e "echo postinst" > .debpkg/DEBIAN/postinst
-            chmod +x .debpkg/DEBIAN/postinst
-            echo "Hello World!" > .debpkg/usr/bin/simple-file
-            ls -la .debpkg/usr/bin/simple-file
-            chmod -x .debpkg/usr/bin/simple-file
+            mkdir -p .debpkg/usr/bin
+            # echo -e "echo postinst" > .debpkg/DEBIAN/postinst
+            # chmod +x .debpkg/DEBIAN/postinst
+            cp ${{github.workspace}}/build_Release_NFM/src/rtl_airband .debpkg/usr/bin
             sudo chown -R root:root .debpkg/
-            ls -laR .debpkg/
 
       - uses: jiro4989/build-deb-action@v2
         with:
@@ -45,9 +41,29 @@ jobs:
             desc: 'RTLSDR Airband - A multiband decoder for AM and NFM signals'
             compress_type: xz
 
-      - name: list package content
-        run: |
-          ls -la rtlsdt-airband*.deb
-          dpkg-deb --info rtlsdt-airband*.deb
-          sudo dpkg-deb --raw-extract rtlsdt-airband*.deb /tmp
-          ls -laR /tmp
+      - name: Create Draft Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: rtlsdr-airband-${{ github.ref }}
+          draft: true
+          prerelease: false
+  
+      - uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./rtlsdt-airband_${{ github.ref }}_amd64.deb
+          asset_name: rtlsdt-airband_${{ github.ref }}_amd64.deb
+          asset_content_type: application/vnd.debian.binary-package
+  
+      - uses: eregon/publish-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_id: ${{ steps.create_release.outputs.id }}
+            
