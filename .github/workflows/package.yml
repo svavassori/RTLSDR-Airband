@@ -45,6 +45,6 @@ jobs:
       - name: list package content
         run: |
           ls -la rtlsdt-airband*.deb
-          dpkg --info rtlsdt-airband*.deb
-          dpkg --raw-extract rtlsdt-airband*.deb /tmp
+          dpkg-deb --info rtlsdt-airband*.deb
+          dpkg-deb --raw-extract rtlsdt-airband*.deb /tmp
           ls -laR /tmp
