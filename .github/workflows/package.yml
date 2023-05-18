@@ -26,7 +26,7 @@ jobs:
             ls -la
             git status
             mkdir -p .debpkg/usr/bin
-            cp ${{github.workspace}}/build_Release_NFM/bin/rtl_airband .debpkg/usr/bin
+            cp ${{github.workspace}}/build_Release_NFM/src/bin/rtl_airband .debpkg/usr/bin
             ls -la .debpkg/usr/bin
             #chmod +x .debpkg/usr/bin/rtl_airband
 
