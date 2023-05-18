@@ -23,13 +23,10 @@ jobs:
 
       - name: create sample script
         run: |
-            ls -la build_Release_NFM/
-            find -name rtl_airband -type f
+            ls -la build_Release_NFM/src
             mkdir -p .debpkg/usr/bin
             cp ${{github.workspace}}/build_Release_NFM/src/rtl_airband .debpkg/usr/bin
-            ls -la .debpkg/usr/bin
-            #chmod +x .debpkg/usr/bin/rtl_airband
-
+            # ls -la .debpkg/usr/bin
             # create DEBIAN directory if you want to add other pre/post scripts
             mkdir -p .debpkg/DEBIAN
             echo -e "echo postinst" > .debpkg/DEBIAN/postinst
@@ -48,5 +45,5 @@ jobs:
 
       - name: list package content
         run: |
-          ls -la
+          ls -la rtlsdt-airband*.deb
           dpkg --contents rtlsdt-airband*.deb
