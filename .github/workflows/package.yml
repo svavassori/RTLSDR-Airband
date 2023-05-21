@@ -34,18 +34,18 @@ jobs:
 
       - uses: jiro4989/build-deb-action@v2
         with:
-            package: rtlsdt-airband
+            package: rtlsdr-airband
             package_root: .debpkg
             maintainer: charlie-foxtrot
             version: ${{ github.ref }} # refs/tags/v*.*.*
             arch: 'amd64'
-            depends: 'libc6 (>= 2.28)' # since Debian Buster
+            depends: 'libconfig++9v5, libmp3lame0, libshout3, librtlsdr0, libsoapysdr0.8, libfftw3-single3, libpulse0'
             desc: 'RTLSDR Airband - A multiband decoder for AM and NFM signals'
             compress_type: xz
 
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: rtlsdt-airband_*_amd64.deb
+          files: rtlsdr-airband_*_amd64.deb
           fail_on_unmatched_files: true
             
