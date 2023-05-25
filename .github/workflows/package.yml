@@ -26,20 +26,28 @@ jobs:
       - name: create .deb content structure
         run: |
             mkdir -p .debpkg/DEBIAN
-            mkdir -p .debpkg/usr/bin
             # echo -e "echo postinst" > .debpkg/DEBIAN/postinst
             # chmod +x .debpkg/DEBIAN/postinst
-            cp ${{github.workspace}}/build_Release_NFM/src/rtl_airband .debpkg/usr/bin
-            sudo chown -R root:root .debpkg/
-
-      - uses: jiro4989/build-deb-action@v2
+            # systemd services
+            mkdir -p .debpkg/lib/systemd/system/
+            sed 's|/usr/local/bin/rtl_airband|/usr/bin/rtlsdr_airband|g' init.d/rtl_airband.service > .debpkg/lib/systemd/system/rtlsdr_airband.service
+            #
+            mkdir -p .debpkg/usr/bin
+            cp ${{github.workspace}}/build_Release_NFM/src/rtl_airband .debpkg/usr/bin/rtlsdr_airband
+            pushd .debpkg/usr/bin
+            ln -s rtlsdr_airband rtl_airband
+            popd
+# TODO add
+# default configuration under /etc
+# example configuration under /usr/share/docs/ maybe?
+      - uses: jiro4989/build-deb-action@v3
         with:
             package: rtlsdr-airband
             package_root: .debpkg
             maintainer: charlie-foxtrot
             version: ${{ github.ref }} # refs/tags/v*.*.*
             arch: 'amd64'
-            depends: 'libconfig++9v5, libmp3lame0, libshout3, librtlsdr0, libsoapysdr0.8, libfftw3-single3, libpulse0'
+            depends: 'libconfig++9v5 (>= 1.5-0.4), libmp3lame0 (>= 3.100), libshout3 (>= 2.4.5), librtlsdr0 (>= 0.6.0), libsoapysdr0.8 (>= 0.8.1), libfftw3-single3 (>= 3.3.8), libpulse0 (>= 14.2)'
             desc: 'RTLSDR Airband - A multiband decoder for AM and NFM signals'
             compress_type: xz
 
