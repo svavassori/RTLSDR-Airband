@@ -25,24 +25,22 @@ jobs:
 
       - name: create .deb content structure
         run: |
-            mkdir -p .debpkg/DEBIAN
-            # echo -e "echo postinst" > .debpkg/DEBIAN/postinst
-            # chmod +x .debpkg/DEBIAN/postinst
-            # systemd services
-            mkdir -p .debpkg/lib/systemd/system/
-            sed 's|/usr/local/bin/rtl_airband|/usr/bin/rtlsdr_airband|g' init.d/rtl_airband.service > .debpkg/lib/systemd/system/rtlsdr_airband.service
-            #
-            mkdir -p .debpkg/usr/bin
-            cp ${{github.workspace}}/build_Release_NFM/src/rtl_airband .debpkg/usr/bin/rtlsdr_airband
-            pushd .debpkg/usr/bin
-            ln -s rtlsdr_airband rtl_airband
-            popd
-# TODO add
-# default configuration under /etc
-# example configuration under /usr/share/docs/ maybe?
+            mkdir --parents .debpkg/lib/systemd/system/
+            sed 's|/usr/local/bin|/usr/local|g' init.d/rtl_airband.service > .debpkg/lib/systemd/system/rtl_airband.service
+            
+            mkdir --parents .debpkg/usr/bin
+            cp build_Release_NFM/src/rtl_airband .debpkg/usr/bin/
+            
+            mkdir --parents .debpkg/usr/share/rtl_airband/config
+            cp config/*.conf .debpkg/usr/share/rtl_airband/config/
+
+            mkdir --parents .debpkg/usr/share/doc/rtl_airband
+            cp README.md LICENSE .debpkg/usr/share/doc/rtl_airband/
+            gzip --keep --stdout NEWS.md > .debpkg/usr/share/doc/rtl_airband/NEWS.md.gz
+
       - uses: jiro4989/build-deb-action@v3
         with:
-            package: rtlsdr-airband
+            package: rtl-airband
             package_root: .debpkg
             maintainer: charlie-foxtrot
             version: ${{ github.ref }} # refs/tags/v*.*.*
@@ -54,6 +52,6 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          files: rtlsdr-airband_*_amd64.deb
+          files: rtl-airband_*_amd64.deb
           fail_on_unmatched_files: true
             
