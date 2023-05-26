@@ -26,7 +26,7 @@ jobs:
       - name: create .deb content structure
         run: |
             mkdir --parents .debpkg/lib/systemd/system/
-            sed 's|/usr/local/bin|/usr/local|g' init.d/rtl_airband.service > .debpkg/lib/systemd/system/rtl_airband.service
+            sed 's|/usr/local/bin|/usr/bin|g' init.d/rtl_airband.service > .debpkg/lib/systemd/system/rtl_airband.service
             
             mkdir --parents .debpkg/usr/bin
             cp build_Release_NFM/src/rtl_airband .debpkg/usr/bin/
